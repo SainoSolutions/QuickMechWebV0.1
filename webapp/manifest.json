@@ -1,0 +1,147 @@
+{
+    "_version": "1.12.0",
+    "sap.app": {
+        "id": "zmcwiseprdapp",
+        "type": "application",
+        "i18n": "i18n/i18n.properties",
+        "applicationVersion": {
+            "version": "1.0.0"
+        },
+        "title": "{{appTitle}}",
+        "description": "{{appDescription}}",
+        "dataSources": {
+            "mainService": {
+                "uri": "/sap/opu/odata/sap/",
+                "type": "OData",
+                "settings": {
+                    "odataVersion": "2.0",
+                    "localUri": "localService/metadata.xml"
+                }
+            }
+        },
+        "crossNavigation": {
+            "inbound": {
+                "zmcwiseprdapp-display": {
+                    "semanticObject": "ZMCWisePrd",
+                    "action": "display",
+                    "title": "{{appTitle}}",
+                    "subTitle": "{{appDescription}}",
+                    "signature": {
+                        "parameters": {},
+                        "additionalParameters": "allowed"
+                    }
+                }
+            }
+        }
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "icons": {
+            "icon": "",
+            "favIcon": "",
+            "phone": "",
+            "phone@2": "",
+            "tablet": "",
+            "tablet@2": ""
+        },
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        }
+    },
+    "sap.flp": {
+        "type": "application",
+        "config": {
+            "favIcon": "",
+            "icon": "sap-icon://factory",
+            "deviceTypes": {
+                "desktop": true,
+                "tablet": true,
+                "phone": true
+            }
+        }
+    },
+    "sap.ui5": {
+        "flexEnabled": false,
+        "rootView": {
+            "viewName": "zmcwiseprdapp.view.App",
+            "type": "XML",
+            "async": true,
+            "id": "app"
+        },
+        "dependencies": {
+            "minUI5Version": "1.71.67",
+            "libs": {
+                "sap.m": {},
+                "sap.ui.core": {},
+                "sap.ui.table": {},
+                "sap.ui.unified": {},
+                "sap.ui.layout": {}
+            }
+        },
+        "interfaces": [
+            "sap.ui.core.IAsyncContentCreation"
+        ],
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        },
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "zmcwiseprdapp.i18n.i18n"
+                }
+            },
+            "": {
+                "type": "sap.ui.model.json.JSONModel",
+                "settings": {},
+                "preload": true
+            },
+            "inputModel": {
+                "type": "sap.ui.model.json.JSONModel",
+                "settings": {}
+            },
+            "tableModel": {
+                "type": "sap.ui.model.json.JSONModel",
+                "settings": {}
+            },
+            "dropdownModel": {
+                "type": "sap.ui.model.json.JSONModel",
+                "settings": {}
+            }
+        },
+        "resources": {
+            "css": [
+                {
+                    "uri": "css/style.css"
+                }
+            ]
+        },
+        "routing": {
+            "config": {
+                "routerClass": "sap.m.routing.Router",
+                "viewType": "XML",
+                "async": true,
+                "viewPath": "zmcwiseprdapp.view",
+                "controlAggregation": "pages",
+                "controlId": "app",
+                "clearControlAggregation": false
+            },
+            "routes": [
+                {
+                    "name": "RouteMainView",
+                    "pattern": "",
+                    "target": ["TargetMainView"]
+                }
+            ],
+            "targets": {
+                "TargetMainView": {
+                    "viewType": "XML",
+                    "viewName": "MainView"
+                }
+            }
+        }
+    }
+}

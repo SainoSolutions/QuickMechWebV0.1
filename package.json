@@ -1,0 +1,14 @@
+{
+  "name": "zmc_wise_prd_app",
+  "version": "1.0.0",
+  "description": "ZMB31_EXT Production Downtime Entry",
+  "scripts": {
+    "start": "ui5 serve -o index.html",
+    "build": "ui5 build --clean-dest",
+    "deploy": "npm run build && npx fiori deploy"
+  },
+  "devDependencies": {
+    "@ui5/cli": "^3.0.0",
+    "@sap/ux-ui5-tooling": "^1.0.0"
+  }
+}

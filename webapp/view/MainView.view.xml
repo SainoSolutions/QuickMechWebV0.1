@@ -1,0 +1,609 @@
+<mvc:View
+    controllerName="zmcwiseprdapp.controller.MainView"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:t="sap.ui.table"
+    xmlns:core="sap.ui.core"
+    displayBlock="true"
+    height="100%">
+
+    <Page
+        id="mainPage"
+        showNavButton="false"
+        showHeader="false"
+        backgroundDesign="Transparent"
+        class="zmcMainPage zmcAppContainer">
+
+        <content>
+            <VBox class="zmcScreen zmcAppContainer">
+                <!-- Status Indicator -->
+                <MessageStrip
+                    text="{i18n>readOnlyNotice}"
+                    type="Information"
+                    showIcon="true"
+                    showCloseButton="false"
+                    class="sapUiSmallMarginBottom"
+                    visible="{configModel>/isSubmitted}"/>
+                
+                <VBox class="zmcSection">
+                    <Text text="{i18n>inputScreen}" class="zmcSectionLabel"/>
+                    <VBox class="zmcInputCard">
+                        <HBox class="zmcInputRow" renderType="Bare">
+                            
+                            <!-- Material Code -->
+                            <VBox class="zmcFieldBox zmcFieldBoxMaterial">
+                                <layoutData>
+                                    <FlexItemData growFactor="2" baseSize="14rem"/>
+                                </layoutData>
+                                <Label text="{i18n>materialCode} *" class="zmcLabel"/>
+                                <Input
+                                    id="inpMaterial"
+                                    value="{inputModel>/MATNR}"
+                                    change="onMaterialChange"
+                                    showValueHelp="true"
+                                    valueHelpRequest="onMaterialValueHelp"
+                                    width="100%"
+                                    editable="{= !${configModel>/isSubmitted} }"
+                                    class="zmcInput"/>
+                            </VBox>
+
+                            <!-- Plant -->
+                            <VBox class="zmcFieldBox zmcFieldBoxPlant">
+                                <layoutData>
+                                    <FlexItemData growFactor="1" baseSize="11rem"/>
+                                </layoutData>
+                                <Label text="{i18n>plant} *" class="zmcLabel"/>
+                                <Input
+                                    id="inpPlant"
+                                    value="{inputModel>/WERKS}"
+                                    change="onPlantChange"
+                                    showValueHelp="true"
+                                    valueHelpRequest="onPlantValueHelp"
+                                    width="100%"
+                                    editable="{= !${configModel>/isSubmitted} }"
+                                    class="zmcInput"/>
+                            </VBox>
+
+                            <!-- Batch -->
+                            <VBox class="zmcFieldBox zmcFieldBoxBatch">
+                                <layoutData>
+                                    <FlexItemData growFactor="2" baseSize="14rem"/>
+                                </layoutData>
+                                <Label text="{i18n>batch} *" class="zmcLabel"/>
+                                <Input
+                                    id="inpBatch"
+                                    value="{inputModel>/CHARG}"
+                                    change="onBatchChange"
+                                    width="100%"
+                                    editable="{= !${configModel>/isSubmitted} }"
+                                    class="zmcInput"/>
+                            </VBox>
+
+                            <!-- Process Order -->
+                            <VBox class="zmcFieldBox zmcFieldBoxProcess">
+                                <layoutData>
+                                    <FlexItemData growFactor="1" baseSize="11rem"/>
+                                </layoutData>
+                                <Label text="{i18n>processOrder}" class="zmcLabel"/>
+                                <Input
+                                    id="inpProcessOrder"
+                                    value="{inputModel>/AUFNR}"
+                                    editable="false"
+                                    width="100%"
+                                    class="zmcInput zmcInputReadOnly"/>
+                            </VBox>
+                            
+                        </HBox>
+                    </VBox>
+                </VBox>
+
+                <VBox class="zmcSection">
+                    <Text text="{i18n>entryScreen}" class="zmcSectionLabel"/>
+                    <VBox class="zmcEntryCard">
+                        <!-- Header: Title + Manage Columns on same row; Timer below -->
+                        <VBox class="zmcTableHeaderRow">
+                            <!-- Row 1: Title (left) + Manage Columns (right) -->
+                            <HBox justifyContent="SpaceBetween" alignItems="Center" width="100%" class="zmcTableHeaderTitleRow">
+                                <Title text="{i18n>resourceDowntimeTitle}" level="H5" class="zmcTableTitle"/>
+                            </HBox>
+                            <!-- Row 2: Timer (centered, full-width) -->
+                            <HBox justifyContent="Center" alignItems="Center" width="100%" class="zmcTimerWrapper">
+                                <HBox 
+                                    alignItems="Center" 
+                                    class="{= ${configModel>/timerUrgency} === 'Critical' ? 'zmcTimerPill zmcTimerCritical' : ${configModel>/timerUrgency} === 'Urgent' ? 'zmcTimerPill zmcTimerUrgent' : 'zmcTimerPill' }"
+                                    visible="{= ${configModel>/remainingTime} !== '' }">
+                                    <core:Icon src="sap-icon://fiori-timer" class="zmcTimerIcon"/>
+                                    <Text text="{i18n>expiresIn}" class="zmcTimerLabel"/>
+                                    <Text text="{configModel>/remainingTime}" class="zmcTimerValue"/>
+                                </HBox>
+                            </HBox>
+                        </VBox>
+                        
+                        <ScrollContainer horizontal="true" vertical="false" width="100%" class="zmcTableScroller zmcDesktopTable">
+                        <t:Table
+                            id="downtimeTable"
+                            rows="{tableModel>/rows}"
+                            selectionMode="None"
+                            selectionBehavior="Row"
+                            showNoData="true"
+                            noData="No data available. Click 'Add Row' to create a new entry."
+                            enableSelectAll="false"
+                            visibleRowCountMode="Auto"
+                            visibleRowCount="5"
+                            rowHeight="32"
+                            columnHeaderHeight="60"
+                            enableColumnReordering="false"
+                            width="3320px"
+                            class="zmcTable">
+                            
+                            <t:columns>
+                                <!-- NEW: Selection Checkbox Column -->
+                                <t:Column width="40px" hAlign="Center" resizable="false">
+                                    <Label text="" wrapping="true" class="zmcHeaderLabel"/>
+                                    <t:template>
+                                        <CheckBox 
+                                            selected="{tableModel>selected}"
+                                            select="onRowCheckboxSelect"
+                                            enabled="{= !${configModel>/isSubmitted} }"
+                                            class="zmcRowCheckbox"/>
+                                    </t:template>
+                                </t:Column>
+
+                                <!-- Column 1: CRSSKU -->
+                                <t:Column width="160px" hAlign="Begin" resizable="false">
+                                    <Label text="{i18n>crssku}" wrapping="true" class="zmcHeaderLabel"/>
+                                    <t:template>
+                                        <Input 
+                                            value="{tableModel>ZSKUGRCODECRS}" 
+                                            editable="false" 
+                                            textAlign="Begin"
+                                            width="100%"
+                                            class="zmcTableInput zmcTableInputReadOnly"/>
+                                    </t:template>
+                                </t:Column>
+
+                                <!-- Column 2: Resource With Description -->
+                                <t:Column width="220px" hAlign="Begin" resizable="false">
+                                    <Label text="{i18n>resourceWithDesc}" wrapping="true" class="zmcHeaderLabel"/>
+                                    <t:template>
+                                        <Input 
+                                            value="{tableModel>ARBPL_DESC}" 
+                                            textAlign="Begin"
+                                            width="100%"
+                                            editable="{= !${configModel>/isSubmitted} }"
+                                            class="zmcTableInput"/>
+                                    </t:template>
+                                </t:Column>
+
+                                <!-- Column 3: Plant -->
+                                <t:Column width="96px" hAlign="Center" resizable="false">
+                                    <Label text="{i18n>plantHeader}" wrapping="true" class="zmcHeaderLabel"/>
+                                    <t:template>
+                                        <Input 
+                                            value="{tableModel>WERKS}" 
+                                            editable="false" 
+                                            textAlign="Center"
+                                            width="100%"
+                                            class="zmcTableInput zmcTableInputReadOnly"/>
+                                    </t:template>
+                                </t:Column>
+
+                                <!-- Column 4: Qty -->
+                                <t:Column width="110px" hAlign="End" resizable="false">
+                                    <Label text="{i18n>qty}" wrapping="true" class="zmcHeaderLabel"/>
+                                    <t:template>
+                                        <Input 
+                                            value="{tableModel>MENGE}" 
+                                            change="onQuantityChange" 
+                                            textAlign="End"
+                                            width="100%"
+                                            editable="{= !${configModel>/isSubmitted} }"
+                                            class="zmcTableInput"/>
+                                    </t:template>
+                                </t:Column>
+
+                                <!-- Column 5: Eqp Brk Down (Nos.) -->
+                                <t:Column width="154px" hAlign="End" resizable="false">
+                                    <Label text="{i18n>eqpBreakdownNos}" wrapping="true" class="zmcHeaderLabel"/>
+                                    <t:template>
+                                        <Input 
+                                            value="{tableModel>ZEQP_NO_DT}" 
+                                            change="onEqpBreakdownChange" 
+                                            textAlign="End"
+                                            width="100%"
+                                            editable="{= !${configModel>/isSubmitted} }"
+                                            class="zmcTableInput"/>
+                                    </t:template>
+                                </t:Column>
+
+                                <!-- Column 6: Total Shutdown Time (Min) -->
+                                <t:Column width="182px" hAlign="End" resizable="false">
+                                    <Label text="{i18n>totalShutdownTime}" wrapping="true" class="zmcHeaderLabel"/>
+                                    <t:template>
+                                        <Input 
+                                            value="{tableModel>ZTOT_DT}" 
+                                            change="onTotDownTimeChange" 
+                                            textAlign="End"
+                                            width="100%"
+                                            editable="{= !${configModel>/isSubmitted} }"
+                                            class="zmcTableInput"/>
+                                    </t:template>
+                                </t:Column>
+
+                                <!-- Column 7: Total Planned Down Time (Min) -->
+                                <t:Column width="220px" hAlign="End" resizable="false">
+                                    <Label text="{i18n>totalPlannedDownTime}" wrapping="true" class="zmcHeaderLabel"/>
+                                    <t:template>
+                                        <Input 
+                                            value="{tableModel>ZTOT_PLANNED_DT}" 
+                                            editable="false" 
+                                            textAlign="End"
+                                            width="100%"
+                                            class="zmcTableInput zmcTableInputReadOnly"/>
+                                    </t:template>
+                                </t:Column>
+
+                                <!-- Column 8: Planned Down Time (Min) -->
+                                <t:Column width="196px" hAlign="End" resizable="false">
+                                    <Label text="{i18n>plannedDownTime}" wrapping="true" class="zmcHeaderLabel"/>
+                                    <t:template>
+                                        <Input 
+                                            value="{tableModel>ZPL_DT}" 
+                                            editable="false" 
+                                            textAlign="End"
+                                            width="100%"
+                                            class="zmcTableInput zmcTableInputReadOnly"/>
+                                    </t:template>
+                                </t:Column>
+
+                                <!-- Column 9: Priority In Other Line (Min) -->
+                                <t:Column width="195px" hAlign="End" resizable="false">
+                                    <Label text="{i18n>priorityInOtherLine}" wrapping="true" class="zmcHeaderLabel"/>
+                                    <t:template>
+                                        <Input 
+                                            value="{tableModel>PRIORITY}" 
+                                            textAlign="End"
+                                            width="100%"
+                                            editable="{= !${configModel>/isSubmitted} }"
+                                            class="zmcTableInput"/>
+                                    </t:template>
+                                </t:Column>
+
+                                <!-- Column 10: Total Equipment Breakdown Time (Min) -->
+                                <t:Column width="250px" hAlign="End" resizable="false">
+                                    <Label text="{i18n>totalEqpBreakdownTime}" wrapping="true" class="zmcHeaderLabel"/>
+                                    <t:template>
+                                        <Input 
+                                            value="{tableModel>ZEQP_BREAK_TOTAL}" 
+                                            textAlign="End"
+                                            width="100%"
+                                            editable="{= !${configModel>/isSubmitted} }"
+                                            class="zmcTableInput"/>
+                                    </t:template>
+                                </t:Column>
+
+                                <!-- Column 11: Utility Failure Time (Min) -->
+                                <t:Column width="200px" hAlign="End" resizable="false">
+                                    <Label text="{i18n>utilityFailureTime}" wrapping="true" class="zmcHeaderLabel"/>
+                                    <t:template>
+                                        <Input 
+                                            value="{tableModel>ZUTILITY_FAIL_DT}" 
+                                            textAlign="End"
+                                            width="100%"
+                                            editable="{= !${configModel>/isSubmitted} }"
+                                            class="zmcTableInput"/>
+                                    </t:template>
+                                </t:Column>
+
+                                <!-- Column 12: Cutting Blade Change Time (Min) -->
+                                <t:Column width="214px" hAlign="End" resizable="false">
+                                    <Label text="{i18n>cuttingBladeChangeTime}" wrapping="true" class="zmcHeaderLabel"/>
+                                    <t:template>
+                                        <Input 
+                                            value="{tableModel>ZCUT_BLADE_DT}" 
+                                            textAlign="End"
+                                            width="100%"
+                                            editable="{= !${configModel>/isSubmitted} }"
+                                            class="zmcTableInput"/>
+                                    </t:template>
+                                </t:Column>
+
+                                <!-- Column 13: Changeover Time (Min) -->
+                                <t:Column width="190px" hAlign="End" resizable="false">
+                                    <Label text="{i18n>changeoverTime}" wrapping="true" class="zmcHeaderLabel"/>
+                                    <t:template>
+                                        <Input 
+                                            value="{tableModel>ZCHANGEOVER_DT}" 
+                                            textAlign="End"
+                                            width="100%"
+                                            editable="{= !${configModel>/isSubmitted} }"
+                                            class="zmcTableInput"/>
+                                    </t:template>
+                                </t:Column>
+
+                                <!-- Column 14: Filling Bulk Not Available Time (Min) -->
+                                <t:Column width="250px" hAlign="End" resizable="false">
+                                    <Label text="{i18n>fillingBulkNotAvailableTime}" wrapping="true" class="zmcHeaderLabel"/>
+                                    <t:template>
+                                        <Input 
+                                            value="{tableModel>ZFILL_BULK_DT}" 
+                                            textAlign="End"
+                                            width="100%"
+                                            editable="{= !${configModel>/isSubmitted} }"
+                                            class="zmcTableInput"/>
+                                    </t:template>
+                                </t:Column>
+
+                                <!-- Column 15: Pm Stock Out At Shop Floor Time (Min) -->
+                                <t:Column width="250px" hAlign="End" resizable="false">
+                                    <Label text="{i18n>pmStockOutAtShopFloorTime}" wrapping="true" class="zmcHeaderLabel"/>
+                                    <t:template>
+                                        <Input 
+                                            value="{tableModel>ZPM_STOCK_DT}" 
+                                            textAlign="End"
+                                            width="100%"
+                                            editable="{= !${configModel>/isSubmitted} }"
+                                            class="zmcTableInput"/>
+                                    </t:template>
+                                </t:Column>
+
+                                <!-- Column 16: Shift -->
+                                <t:Column width="142px" hAlign="Center" resizable="false">
+                                    <Label text="{i18n>shift}" wrapping="true" class="zmcHeaderLabel"/>
+                                    <t:template>
+                                        <Input
+                                            value="{= ${tableModel>ZSHIFT} === 'SHIFT_1' ? 'Shift - 1' : ${tableModel>ZSHIFT} === 'SHIFT_2' ? 'Shift - 2' : ${tableModel>ZSHIFT} === 'SHIFT_3' ? 'Shift - 3' : '' }"
+                                            editable="false"
+                                            textAlign="Center"
+                                            width="100%"
+                                            class="zmcTableInput zmcTableInputReadOnly"/>
+                                    </t:template>
+                                </t:Column>
+                            </t:columns>
+                        </t:Table>
+                        </ScrollContainer>
+
+                        <!-- MOBILE RESPONSIVE TABLE (SAP STANDARD) - Hidden on Desktop -->
+                        <Table 
+                            id="mobileTable"
+                            items="{tableModel>/rows}" 
+                            noDataText="No data available" 
+                            class="zmcMobileTable"
+                            growing="true"
+                            growingThreshold="20"
+                            showSeparators="Inner"
+                            backgroundDesign="Solid"
+                            mode="None">
+                            <columns>
+                                <!-- Column 1: Always visible - contains checkbox + CRSSKU + arrow -->
+                                <Column hAlign="Begin" id="mobileColMaterial" />
+                            </columns>
+                            
+                            <items>
+                                <ColumnListItem class="zmcMobileRow" type="Inactive">
+                                    <cells>
+                                        <!-- Cell 1: Always-visible + expandable sections in one cell -->
+                                        <VBox width="100%">
+                                            <HBox alignItems="Center" justifyContent="SpaceBetween" width="100%">
+                                                <HBox alignItems="Center">
+                                                    <CheckBox selected="{tableModel>selected}" select="onRowCheckboxSelect" enabled="{= !${configModel>/isSubmitted} }" class="sapUiTinyMarginEnd" />
+                                                    <Text text="{tableModel>ZSKUGRCODECRS}" class="zmcMobileCellTitle"/>
+                                                </HBox>
+                                                <core:Icon
+                                                    src="{= ${tableModel>expanded} ? 'sap-icon://slim-arrow-up' : 'sap-icon://slim-arrow-down' }"
+                                                    color="#1c3a6e"
+                                                    press="onToggleMobileRow"
+                                                    class="sapUiSmallMarginBegin zmcExpandIcon"/>
+                                            </HBox>
+                                            
+                                            <VBox class="sapUiSmallMarginBottom" width="100%">
+                                                <Label text="{i18n>resourceWithDesc}" class="zmcMobileLbl"/>
+                                                <Input 
+                                                    value="{tableModel>ARBPL_DESC}" 
+                                                    textAlign="Begin" 
+                                                    width="100%"
+                                                    editable="{= !${configModel>/isSubmitted} }"/>
+                                            </VBox>
+                                            
+                                            <VBox class="sapUiSmallMarginBottom" width="100%">
+                                                <Label text="{i18n>plantHeader}" class="zmcMobileLbl"/>
+                                                <Input 
+                                                    value="{tableModel>WERKS}" 
+                                                    editable="false" 
+                                                    textAlign="Center" 
+                                                    width="100%"
+                                                    class="zmcTableInputReadOnly"/>
+                                            </VBox>
+                                            
+                                            <VBox visible="{= !!${tableModel>expanded} }" width="100%" class="zmcMobileExpandedGroup">
+                                            
+                                            <VBox class="sapUiSmallMarginBottom" width="100%">
+                                                <Label text="{i18n>qty}" class="zmcMobileLbl"/>
+                                                <Input 
+                                                    value="{tableModel>MENGE}" 
+                                                    change="onQuantityChange" 
+                                                    textAlign="End" 
+                                                    type="Number" 
+                                                    width="100%"
+                                                    editable="{= !${configModel>/isSubmitted} }"/>
+                                            </VBox>
+                                            
+                                            <VBox class="sapUiSmallMarginBottom" width="100%">
+                                                <Label text="{i18n>eqpBreakdownNos}" class="zmcMobileLbl"/>
+                                                <Input 
+                                                    value="{tableModel>ZEQP_NO_DT}" 
+                                                    change="onEqpBreakdownChange" 
+                                                    textAlign="End" 
+                                                    type="Number" 
+                                                    width="100%"
+                                                    editable="{= !${configModel>/isSubmitted} }"/>
+                                            </VBox>
+
+                                            <VBox class="sapUiSmallMarginBottom" width="100%">
+                                                <Label text="{i18n>totalShutdownTime}" class="zmcMobileLbl"/>
+                                                <Input 
+                                                    value="{tableModel>ZTOT_DT}" 
+                                                    change="onTotDownTimeChange" 
+                                                    textAlign="End" 
+                                                    type="Number" 
+                                                    width="100%"
+                                                    editable="{= !${configModel>/isSubmitted} }"/>
+                                            </VBox>
+
+                                            <VBox class="sapUiSmallMarginBottom" width="100%">
+                                                <Label text="{i18n>totalPlannedDownTime}" class="zmcMobileLbl"/>
+                                                <Input 
+                                                    value="{tableModel>ZTOT_PLANNED_DT}" 
+                                                    editable="false" 
+                                                    textAlign="End" 
+                                                    width="100%"
+                                                    class="zmcTableInputReadOnly"/>
+                                            </VBox>
+
+                                            <VBox class="sapUiSmallMarginBottom" width="100%">
+                                                <Label text="{i18n>plannedDownTime}" class="zmcMobileLbl"/>
+                                                <Input 
+                                                    value="{tableModel>ZPL_DT}" 
+                                                    editable="false" 
+                                                    textAlign="End" 
+                                                    width="100%"
+                                                    class="zmcTableInputReadOnly"/>
+                                            </VBox>
+
+                                            <VBox class="sapUiSmallMarginBottom" width="100%">
+                                                <Label text="{i18n>priorityInOtherLine}" class="zmcMobileLbl"/>
+                                                <Input 
+                                                    value="{tableModel>PRIORITY}" 
+                                                    textAlign="End" 
+                                                    type="Number" 
+                                                    width="100%"
+                                                    editable="{= !${configModel>/isSubmitted} }"/>
+                                            </VBox>
+
+                                            <VBox class="sapUiSmallMarginBottom" width="100%">
+                                                <Label text="{i18n>totalEqpBreakdownTime}" class="zmcMobileLbl"/>
+                                                <Input 
+                                                    value="{tableModel>ZEQP_BREAK_TOTAL}" 
+                                                    textAlign="End" 
+                                                    type="Number" 
+                                                    width="100%"
+                                                    editable="{= !${configModel>/isSubmitted} }"/>
+                                            </VBox>
+
+                                            <VBox class="sapUiSmallMarginBottom" width="100%">
+                                                <Label text="{i18n>utilityFailureTime}" class="zmcMobileLbl"/>
+                                                <Input 
+                                                    value="{tableModel>ZUTILITY_FAIL_DT}" 
+                                                    textAlign="End" 
+                                                    type="Number" 
+                                                    width="100%"
+                                                    editable="{= !${configModel>/isSubmitted} }"/>
+                                            </VBox>
+
+                                            <VBox class="sapUiSmallMarginBottom" width="100%">
+                                                <Label text="{i18n>cuttingBladeChangeTime}" class="zmcMobileLbl"/>
+                                                <Input 
+                                                    value="{tableModel>ZCUT_BLADE_DT}" 
+                                                    textAlign="End" 
+                                                    type="Number" 
+                                                    width="100%"
+                                                    editable="{= !${configModel>/isSubmitted} }"/>
+                                            </VBox>
+
+                                            <VBox class="sapUiSmallMarginBottom" width="100%">
+                                                <Label text="{i18n>changeoverTime}" class="zmcMobileLbl"/>
+                                                <Input 
+                                                    value="{tableModel>ZCHANGEOVER_DT}" 
+                                                    textAlign="End" 
+                                                    type="Number" 
+                                                    width="100%"
+                                                    editable="{= !${configModel>/isSubmitted} }"/>
+                                            </VBox>
+
+                                            <VBox class="sapUiSmallMarginBottom" width="100%">
+                                                <Label text="{i18n>fillingBulkNotAvailableTime}" class="zmcMobileLbl"/>
+                                                <Input 
+                                                    value="{tableModel>ZFILL_BULK_DT}" 
+                                                    textAlign="End" 
+                                                    type="Number" 
+                                                    width="100%"
+                                                    editable="{= !${configModel>/isSubmitted} }"/>
+                                            </VBox>
+
+                                            <VBox class="sapUiSmallMarginBottom" width="100%">
+                                                <Label text="{i18n>pmStockOutAtShopFloorTime}" class="zmcMobileLbl"/>
+                                                <Input 
+                                                    value="{tableModel>ZPM_STOCK_DT}" 
+                                                    textAlign="End" 
+                                                    type="Number" 
+                                                    width="100%"
+                                                    editable="{= !${configModel>/isSubmitted} }"/>
+                                            </VBox>
+
+                                            <VBox class="sapUiSmallMarginBottom" width="100%">
+                                                <Label text="{i18n>shift}" class="zmcMobileLbl"/>
+                                                <Input 
+                                                    value="{= ${tableModel>ZSHIFT} === 'SHIFT_1' ? 'Shift - 1' : ${tableModel>ZSHIFT} === 'SHIFT_2' ? 'Shift - 2' : ${tableModel>ZSHIFT} === 'SHIFT_3' ? 'Shift - 3' : '' }" 
+                                                    editable="false" 
+                                                    textAlign="Center" 
+                                                    width="100%"
+                                                    class="zmcTableInputReadOnly"/>
+                                            </VBox>
+
+                                            </VBox>
+                                        </VBox>
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+
+
+                        <HBox class="zmcAddRowArea" alignItems="Center">
+                            <Button 
+                                text="{i18n>addRow}" 
+                                icon="sap-icon://add" 
+                                type="Transparent" 
+                                enabled="{= !${configModel>/timerExpired} &amp;&amp; !${configModel>/isSubmitted} }"
+                                press="onAddRow" 
+                                class="zmcAddRowBtn"/>
+                        </HBox>
+
+                        <HBox class="zmcOptionRow" alignItems="Center" renderType="Bare">
+                            <Button 
+                                text="{i18n>change}" 
+                                icon="sap-icon://edit"
+                                enabled="{= ${tableModel>/hasSelection} &amp;&amp; !${configModel>/timerExpired} &amp;&amp; !${configModel>/isSubmitted} }" 
+                                press="onChangeRow" 
+                                class="zmcOptionBtn zmcOptionBtnChange"/>
+                            <Button 
+                                text="{i18n>delete}" 
+                                icon="sap-icon://delete"
+                                enabled="{= ${tableModel>/hasSelection} &amp;&amp; !${configModel>/timerExpired} &amp;&amp; !${configModel>/isSubmitted} }" 
+                                press="onDeleteRow" 
+                                class="zmcOptionBtn zmcOptionBtnDelete"/>
+                        </HBox>
+                    </VBox>
+                </VBox>
+            </VBox>
+        </content>
+        <footer>
+            <OverflowToolbar>
+                <ToolbarSpacer/>
+                <Button 
+                    text="{i18n>submitByUser}" 
+                    type="Emphasized" 
+                    icon="sap-icon://accept"
+                    press="onFinalSubmit"
+                    enabled="{= !${configModel>/isSubmitted} &amp;&amp; !${configModel>/timerExpired} }"/>
+                <Button 
+                    text="{i18n>manageColumns}" 
+                    icon="sap-icon://add"
+                    type="Emphasized"
+                    visible="{configModel>/isAdmin}"
+                    enabled="{= !${configModel>/isSubmitted} }"
+                    press="onManageColumns"
+                    class="zmcFooterAdminBtn"/>
+            </OverflowToolbar>
+        </footer>
+    </Page>
+</mvc:View>
