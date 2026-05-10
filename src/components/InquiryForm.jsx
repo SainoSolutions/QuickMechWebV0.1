@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { send } from '@emailjs/browser';
 import { Mail, Phone, MapPin, Send, CheckCircle } from 'lucide-react';
 
 const InquiryForm = () => {
@@ -10,11 +11,17 @@ const InquiryForm = () => {
     message: ''
   });
   const [submitted, setSubmitted] = useState(false);
+  const [isSending, setIsSending] = useState(false);
   const [errors, setErrors] = useState({});
+  const [submitError, setSubmitError] = useState('');
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    const normalizedValue = name === 'phone'
+      ? value.replace(/\D/g, '').slice(0, 10)
+      : value;
+
+    setFormData(prev => ({ ...prev, [name]: normalizedValue }));
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
@@ -26,6 +33,7 @@ const InquiryForm = () => {
     if (!formData.email.trim()) newErrors.email = 'Email is required';
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = 'Invalid email';
     if (!formData.phone.trim()) newErrors.phone = 'Phone is required';
+    else if (!/^[6-9]\d{9}$/.test(formData.phone.trim())) newErrors.phone = 'Enter a 10-digit mobile number starting with 6, 7, 8, or 9';
     if (!formData.message.trim()) newErrors.message = 'Message is required';
     
     setErrors(newErrors);
@@ -34,14 +42,47 @@ const InquiryForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      setSubmitted(true);
-      // Reset form after 3 seconds
-      setTimeout(() => {
-        setFormData({ name: '', email: '', phone: '', message: '' });
-        setSubmitted(false);
-      }, 3000);
+    if (!validateForm()) return;
+
+    setIsSending(true);
+    setSubmitError('');
+
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+    if (!serviceId || !templateId || !publicKey) {
+      setSubmitError('EmailJS config is missing. Move your .env to the project root and restart the dev server.');
+      setIsSending(false);
+      return;
     }
+
+    const templateParams = {
+      from_name: formData.name,
+      from_email: formData.email,
+      phone: formData.phone,
+      message: formData.message
+    };
+
+    send(
+      serviceId,
+      templateId,
+      templateParams,
+      publicKey
+    )
+      .then(() => {
+        setSubmitted(true);
+        setFormData({ name: '', email: '', phone: '', message: '' });
+        setTimeout(() => {
+          setSubmitted(false);
+        }, 3000);
+      })
+      .catch(() => {
+        setSubmitError('Unable to send your message right now. Please try again later.');
+      })
+      .finally(() => {
+        setIsSending(false);
+      });
   };
 
   return (
@@ -131,7 +172,8 @@ const InquiryForm = () => {
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    placeholder="+91 9876543210"
+                    placeholder="9876543210"
+                    maxLength={10}
                     className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-orange-400 transition-colors"
                   />
                   {errors.phone && <p className="text-red-400 text-sm mt-1">{errors.phone}</p>}
@@ -150,14 +192,16 @@ const InquiryForm = () => {
                   {errors.message && <p className="text-red-400 text-sm mt-1">{errors.message}</p>}
                 </div>
 
+                {submitError && <p className="text-red-400 text-sm mb-2">{submitError}</p>}
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   type="submit"
-                  className="w-full px-6 py-3 rounded-lg font-semibold text-white bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 transition-all shadow-lg shadow-orange-500/30 flex items-center justify-center gap-2"
+                  disabled={isSending}
+                  className="w-full px-6 py-3 rounded-lg font-semibold text-white bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 transition-all shadow-lg shadow-orange-500/30 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   <Send className="w-4 h-4" />
-                  Send Inquiry
+                  {isSending ? 'Sending...' : 'Send Inquiry'}
                 </motion.button>
               </form>
             ) : (
