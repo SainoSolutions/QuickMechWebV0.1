@@ -25,7 +25,7 @@ const Hero = () => {
             className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight"
           >
             Your Doorstep <br />
-            <span className="text-gradient">Expert Car & Bike Service at Your Doorstep</span>
+            <span className="text-gradient">Car / Bike Experts</span>
           </motion.h1>
           
           <motion.p 
