@@ -191,6 +191,9 @@ const Footer = () => {
             <a href="#" className="hover:text-gray-300 transition-colors">Terms of Service</a>
             <a href="#" className="hover:text-gray-300 transition-colors">Cookie Policy</a>
           </div>
+          <div className="flex gap-6 text-sm text-gray-500">  
+            <p className="hover:text-gray-300 transition-colors">Powered by Saino Solutions</p>
+          </div>
         </motion.div>
       </div>
     </footer>
