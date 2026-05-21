@@ -1,6 +1,6 @@
-import React from 'react';
 import { motion } from 'framer-motion';
-import { Smartphone, CheckCircle, Download, Apple, Zap, MapPin, Star, Clock } from 'lucide-react';
+import { Download, Apple, Zap, MapPin, Star, Clock } from 'lucide-react';
+import appPreview from '../assets/app-preview.png';
 
 const AppPromotion = () => {
   const features = [
@@ -97,9 +97,9 @@ const AppPromotion = () => {
             >
               <div className="absolute inset-0 bg-gradient-to-tr from-orange-500/40 to-purple-500/40 rounded-[3rem] transform rotate-6 blur-2xl"></div>
               <img
-                src="https://images.unsplash.com/photo-1512941691920-25bda36dc6f6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                alt="Mobile App"
-                className="relative z-10 w-full rounded-[3rem] shadow-2xl border-4 border-white/10"
+                src={appPreview}
+                alt="Quick Mech mobile app preview"
+                className="relative z-10 w-full rounded-[2rem] shadow-2xl"
               />
             </motion.div>
           </motion.div>
