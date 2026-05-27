@@ -263,7 +263,7 @@ const BookingFlow = ({ selectedService, setSelectedService }) => {
                     <input
                       type="email"
                       name="email"
-                      placeholder="your@email.com"
+                      placeholder="Enter your email address"
                       value={formData.email}
                       onChange={handleInputChange}
                       className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-orange-400 transition-colors"

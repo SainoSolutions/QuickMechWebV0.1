@@ -32,7 +32,7 @@ const FAQ = () => {
     },
     {
       question: "Is the service available in my area?",
-      answer: "We're currently available in major cities across India. Enter your location in the app to check availability. We're expanding to new cities regularly!"
+      answer: "We're currently available in Guwahati (Assam). Enter your location in the app to check availability."
     },
     {
       question: "What payment methods do you accept?",
