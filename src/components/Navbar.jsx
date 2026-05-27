@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Menu, X, Car, Download } from 'lucide-react';
 
-const Navbar = () => {
+const Navbar = ({ hideLinks = false }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const scrollToSection = (id) => {
@@ -22,7 +22,7 @@ const Navbar = () => {
           </a>
 
           {/* Desktop Menu */}
-          <div className="hidden md:block">
+          {!hideLinks && <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-8">
               <button
                 onClick={() => scrollToSection('trending')}
@@ -56,22 +56,22 @@ const Navbar = () => {
                 Download App
               </button>
             </div>
-          </div>
+          </div>}
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center">
+          {!hideLinks && <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-white/10 focus:outline-none transition-colors"
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
-          </div>
+          </div>}
         </div>
       </div>
 
       {/* Mobile Menu */}
-      {isOpen && (
+      {!hideLinks && isOpen && (
         <div className="md:hidden glassmorphism border-t border-white/10">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <button

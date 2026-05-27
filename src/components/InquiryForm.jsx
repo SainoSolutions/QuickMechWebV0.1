@@ -105,9 +105,10 @@ const InquiryForm = () => {
 
             <div className="space-y-6">
               {[
-                { icon: Mail, label: 'Email', value: 'support@quickmech.com', color: 'text-blue-400' },
-                { icon: Phone, label: 'Phone', value: '+91 9876543210', color: 'text-green-400' },
-                { icon: MapPin, label: 'Location', value: 'Mumbai, India', color: 'text-red-400' }
+                { icon: Mail, label: 'Email', value: 'SUPPORT@QUICKMECH.IN', color: 'text-blue-400' },
+                { icon: Phone, label: 'Customer Help Line', value: '+91 8787451886', color: 'text-green-400' },
+                { icon: Phone, label: 'Customer Support', value: '+91 9774336670', color: 'text-green-400' },
+                { icon: MapPin, label: 'Location', value: 'Guwahati (Assam)', color: 'text-red-400' }
               ].map((item, index) => (
                 <motion.div
                   key={index}
@@ -159,7 +160,7 @@ const InquiryForm = () => {
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
-                    placeholder="your@email.com"
+                    placeholder="Enter your email address"
                     className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-orange-400 transition-colors"
                   />
                   {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email}</p>}
@@ -172,7 +173,7 @@ const InquiryForm = () => {
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    placeholder="9876543210"
+                    placeholder="Enter your phone number"
                     maxLength={10}
                     className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-orange-400 transition-colors"
                   />
