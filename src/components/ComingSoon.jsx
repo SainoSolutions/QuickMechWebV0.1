@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Bell, CalendarClock, Mail, Phone, Sparkles } from 'lucide-react';
+import { Bell, CalendarClock, Mail, Phone } from 'lucide-react';
 
 const ComingSoon = () => {
   return (
@@ -16,16 +16,6 @@ const ComingSoon = () => {
 
       <div className="relative z-10 mx-auto flex min-h-[calc(100vh-4rem)] max-w-7xl items-center px-4 py-16 sm:px-6 lg:px-8">
         <div className="max-w-3xl">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-orange-400/30 bg-orange-500/10 px-4 py-2 text-sm font-semibold text-orange-200 backdrop-blur-md"
-          >
-            <Sparkles className="h-4 w-4 text-secondary" />
-            Launching soon in Guwahati
-          </motion.div>
-
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -54,8 +44,7 @@ const ComingSoon = () => {
           >
             {[
               { icon: CalendarClock, title: 'Doorstep Service', text: 'Car and bike care' },
-              { icon: Bell, title: 'App Launch', text: 'Bookings opening soon' },
-              { icon: Sparkles, title: 'Trusted Care', text: 'Built for Guwahati' }
+              { icon: Bell, title: 'App Launch', text: 'Bookings opening soon' }
             ].map((item) => (
               <div key={item.title} className="rounded-lg border border-white/10 bg-white/8 p-4 backdrop-blur-md">
                 <item.icon className="mb-3 h-6 w-6 text-secondary" />
