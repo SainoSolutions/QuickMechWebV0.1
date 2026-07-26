@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Car, Mail, Phone, MapPin, Heart, Share2, MessageCircle, Zap, Apple, Download } from 'lucide-react';
 
@@ -58,11 +59,22 @@ const Footer = () => {
           >
             <h4 className="text-white font-bold mb-6">Quick Links</h4>
             <ul className="space-y-3">
-              {['Home', 'Services', 'About Us', 'Privacy Policy', 'Terms & Conditions'].map((link, i) => (
-                <li key={i}>
-                  <a href="#" className="text-gray-400 hover:text-secondary transition-colors text-sm">{link}</a>
-                </li>
-              ))}
+              <li>
+                <a href="/" className="text-gray-400 hover:text-secondary transition-colors text-sm">Home</a>
+              </li>
+              <li>
+                <a href="/#services" className="text-gray-400 hover:text-secondary transition-colors text-sm">Services</a>
+              </li>
+              <li>
+                <Link to="/docs/privacy-policy" className="text-gray-400 hover:text-secondary transition-colors text-sm">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link to="/docs/terms-and-conditions" className="text-gray-400 hover:text-secondary transition-colors text-sm">
+                  Terms &amp; Conditions
+                </Link>
+              </li>
             </ul>
           </motion.div>
 
@@ -106,7 +118,9 @@ const Footer = () => {
               </li>
               <li className="flex items-center gap-3 text-gray-400 text-sm">
                 <Mail className="w-4 h-4 text-secondary shrink-0" />
-                <span>SUPPORT@QUICKMECH.IN</span>
+                <a href="mailto:support@quickmech.in" className="hover:text-secondary transition-colors">
+                  support@quickmech.in
+                </a>
               </li>
             </ul>
           </motion.div>
@@ -191,9 +205,8 @@ const Footer = () => {
             © {new Date().getFullYear()} Quick Mech. All rights reserved.
           </p>
           <div className="flex gap-6 text-sm text-gray-500">
-            <a href="#" className="hover:text-gray-300 transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-gray-300 transition-colors">Terms of Service</a>
-            <a href="#" className="hover:text-gray-300 transition-colors">Cookie Policy</a>
+            <Link to="/docs/privacy-policy" className="hover:text-gray-300 transition-colors">Privacy Policy</Link>
+            <Link to="/docs/terms-and-conditions" className="hover:text-gray-300 transition-colors">Terms &amp; Conditions</Link>
           </div>
           <div className="flex gap-6 text-sm text-gray-500">  
             <p className="hover:text-gray-300 transition-colors">Powered by Saino Solutions</p>

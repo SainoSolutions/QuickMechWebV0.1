@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Bell, CalendarClock, Mail, Phone } from 'lucide-react';
 
@@ -61,11 +62,11 @@ const ComingSoon = () => {
             className="flex flex-col gap-3 text-sm font-semibold text-slate-200 sm:flex-row sm:flex-wrap sm:items-center"
           >
             <a
-              href="mailto:SUPPORT@QUICKMECH.IN"
+              href="mailto:support@quickmech.in"
               className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-primary transition hover:bg-orange-100"
             >
               <Mail className="h-4 w-4" />
-              SUPPORT@QUICKMECH.IN
+              support@quickmech.in
             </a>
             <a
               href="tel:+918787451886"
@@ -74,6 +75,21 @@ const ComingSoon = () => {
               <Phone className="h-4 w-4" />
               +91 8787451886
             </a>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.7, delay: 0.5 }}
+            className="mt-10 flex flex-wrap gap-4 text-sm text-slate-400"
+          >
+            <Link to="/docs/privacy-policy" className="hover:text-secondary transition-colors">
+              Privacy Policy
+            </Link>
+            <span className="text-slate-600">·</span>
+            <Link to="/docs/terms-and-conditions" className="hover:text-secondary transition-colors">
+              Terms &amp; Conditions
+            </Link>
           </motion.div>
         </div>
       </div>
