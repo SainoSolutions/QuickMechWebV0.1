@@ -81,13 +81,25 @@ const ComingSoon = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7, delay: 0.5 }}
-            className="mt-10 flex flex-wrap gap-4 text-sm text-slate-400"
+            className="mt-10 flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-slate-400 sm:text-sm"
           >
-            <Link to="/docs/privacy-policy" className="hover:text-secondary transition-colors">
+            <span className="text-slate-500">Legal</span>
+            <span className="text-slate-600" aria-hidden>
+              ·
+            </span>
+            <Link
+              to="/docs/privacy-policy"
+              className="underline decoration-slate-600 underline-offset-4 hover:text-secondary hover:decoration-secondary transition-colors"
+            >
               Privacy Policy
             </Link>
-            <span className="text-slate-600">·</span>
-            <Link to="/docs/terms-and-conditions" className="hover:text-secondary transition-colors">
+            <span className="text-slate-600" aria-hidden>
+              ·
+            </span>
+            <Link
+              to="/docs/terms-and-conditions"
+              className="underline decoration-slate-600 underline-offset-4 hover:text-secondary hover:decoration-secondary transition-colors"
+            >
               Terms &amp; Conditions
             </Link>
           </motion.div>
