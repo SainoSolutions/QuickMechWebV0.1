@@ -1,164 +1,157 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Menu, X, Car, Download } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Menu, Moon, Sun, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from '../context/ThemeContext';
+import { BRAND } from '../data/site';
 
-const Navbar = ({ hideLinks = false }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const LINKS = [
+  { href: '/#services', label: 'Services' },
+  { href: '/#how', label: 'How it works' },
+  { href: '/#play-store', label: 'App' },
+  { href: '/#partner', label: 'Partner' },
+  { href: '/#faq', label: 'FAQ' },
+];
 
-  const scrollToSection = (id) => {
-    setIsOpen(false);
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+export default function Navbar({ legalOnly = false }) {
+  const { isDark, toggle } = useTheme();
+  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
 
-  const legalLinks = (
-    <div className="flex items-center gap-3 text-xs text-slate-400">
-      <Link to="/docs/privacy-policy" className="hover:text-secondary transition-colors">
-        Privacy Policy
-      </Link>
-      <span className="text-slate-600" aria-hidden>
-        |
-      </span>
-      <Link to="/docs/terms-and-conditions" className="hover:text-secondary transition-colors">
-        Terms &amp; Conditions
-      </Link>
-    </div>
-  );
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [location.pathname, location.hash]);
 
   return (
-    <nav className="fixed w-full z-50 glassmorphism">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
-            <Car className="text-secondary w-8 h-8" />
-            <span className="text-xl font-bold text-white">Quick Mech</span>
-          </Link>
+    <header
+      className="fixed inset-x-0 top-0 z-50 transition-[background,box-shadow,border-color] duration-300"
+      style={{
+        background: scrolled || open ? 'var(--nav-bg)' : 'transparent',
+        borderBottom: scrolled || open ? '1px solid var(--line)' : '1px solid transparent',
+        backdropFilter: scrolled || open ? 'blur(14px)' : 'none',
+        boxShadow: scrolled ? 'var(--shadow)' : 'none',
+      }}
+    >
+      <div className="mx-auto flex h-[4.25rem] max-w-6xl items-center justify-between px-4 sm:px-6">
+        <Link to="/" className="group flex items-center gap-2.5">
+          <span className="h-9 w-9 overflow-hidden rounded-xl ring-1 ring-black/10">
+            <img
+              src="/brand/logo.png"
+              alt=""
+              className="h-full w-full object-cover scale-[1.35] transition group-hover:scale-[1.42]"
+            />
+          </span>
+          <span
+            className={
+              scrolled || open
+                ? 'font-display text-lg font-extrabold tracking-tight text-[var(--ink)] sm:text-xl'
+                : 'font-display text-lg font-extrabold tracking-tight text-white sm:text-xl drop-shadow'
+            }
+          >
+            {BRAND.name}
+          </span>
+        </Link>
 
-          {/* Coming-soon / minimal nav: still show legal links */}
-          {hideLinks && <div className="hidden sm:block">{legalLinks}</div>}
-
-          {/* Desktop Menu */}
-          {!hideLinks && (
-            <div className="hidden md:block">
-              <div className="ml-10 flex items-baseline space-x-8">
-                <button
-                  onClick={() => scrollToSection('trending')}
-                  className="text-gray-300 hover:text-secondary px-3 py-2 rounded-md text-sm font-medium transition-colors"
-                >
-                  Trending
-                </button>
-                <button
-                  onClick={() => scrollToSection('services')}
-                  className="text-gray-300 hover:text-secondary px-3 py-2 rounded-md text-sm font-medium transition-colors"
-                >
-                  All Services
-                </button>
-                <button
-                  onClick={() => scrollToSection('faq')}
-                  className="text-gray-300 hover:text-secondary px-3 py-2 rounded-md text-sm font-medium transition-colors"
-                >
-                  FAQ
-                </button>
-                <button
-                  onClick={() => scrollToSection('inquiry')}
-                  className="text-gray-300 hover:text-secondary px-3 py-2 rounded-md text-sm font-medium transition-colors"
-                >
-                  Contact
-                </button>
-                {legalLinks}
-                <button
-                  onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
-                  className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-4 py-2 rounded-full text-sm font-medium transition-all shadow-lg shadow-orange-500/30 flex items-center gap-2"
-                >
-                  <Download className="w-4 h-4" />
-                  Download App
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Mobile Menu Button */}
-          {!hideLinks && (
-            <div className="md:hidden flex items-center">
-              <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-white/10 focus:outline-none transition-colors"
+        {!legalOnly ? (
+          <nav className="hidden items-center gap-1 md:flex">
+            {LINKS.map((l) => (
+              <a
+                key={l.href}
+                href={l.href}
+                className={
+                  scrolled || open
+                    ? 'rounded-full px-3.5 py-2 text-sm font-medium text-[var(--mute)] transition hover:bg-[var(--bg-muted)] hover:text-[var(--ink)]'
+                    : 'rounded-full px-3.5 py-2 text-sm font-medium text-white/80 transition hover:bg-white/10 hover:text-white'
+                }
               >
-                {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </button>
-            </div>
-          )}
+                {l.label}
+              </a>
+            ))}
+          </nav>
+        ) : (
+          <nav className="hidden items-center gap-4 text-sm md:flex">
+            <Link to={BRAND.legal.privacy} className="text-[var(--mute)] hover:text-brand">
+              Privacy
+            </Link>
+            <Link to={BRAND.legal.terms} className="text-[var(--mute)] hover:text-brand">
+              Terms
+            </Link>
+          </nav>
+        )}
 
-          {hideLinks && (
-            <div className="sm:hidden flex items-center gap-2 text-[11px] text-slate-400">
-              <Link to="/docs/privacy-policy" className="hover:text-secondary">
-                Privacy
-              </Link>
-              <span className="text-slate-600">|</span>
-              <Link to="/docs/terms-and-conditions" className="hover:text-secondary">
-                Terms
-              </Link>
-            </div>
-          )}
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={toggle}
+            aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+            className={
+              scrolled || open
+                ? 'inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--line)] bg-[var(--bg-elevated)] text-[var(--ink)] transition hover:border-brand/40'
+                : 'inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20'
+            }
+          >
+            {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </button>
+
+          {!legalOnly ? (
+            <a
+              href="#play-store"
+              className="hidden rounded-full bg-brand px-4 py-2.5 text-sm font-semibold text-white shadow-[var(--shadow)] transition hover:bg-brand-deep sm:inline-flex"
+            >
+              Get the app
+            </a>
+          ) : null}
+
+          {!legalOnly ? (
+            <button
+              type="button"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--line)] md:hidden"
+              aria-label="Menu"
+              onClick={() => setOpen((v) => !v)}
+            >
+              {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            </button>
+          ) : null}
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {!hideLinks && isOpen && (
-        <div className="md:hidden glassmorphism border-t border-white/10">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <button
-              onClick={() => scrollToSection('trending')}
-              className="text-gray-300 hover:text-white block w-full text-left px-3 py-2 rounded-md text-base font-medium"
-            >
-              🔥 Trending Services
-            </button>
-            <button
-              onClick={() => scrollToSection('services')}
-              className="text-gray-300 hover:text-white block w-full text-left px-3 py-2 rounded-md text-base font-medium"
-            >
-              All Services
-            </button>
-            <button
-              onClick={() => scrollToSection('faq')}
-              className="text-gray-300 hover:text-white block w-full text-left px-3 py-2 rounded-md text-base font-medium"
-            >
-              FAQ
-            </button>
-            <button
-              onClick={() => scrollToSection('inquiry')}
-              className="text-gray-300 hover:text-white block w-full text-left px-3 py-2 rounded-md text-base font-medium"
-            >
-              Contact Us
-            </button>
-            <Link
-              to="/docs/privacy-policy"
-              onClick={() => setIsOpen(false)}
-              className="text-gray-400 hover:text-white block w-full text-left px-3 py-2 rounded-md text-sm"
-            >
-              Privacy Policy
-            </Link>
-            <Link
-              to="/docs/terms-and-conditions"
-              onClick={() => setIsOpen(false)}
-              className="text-gray-400 hover:text-white block w-full text-left px-3 py-2 rounded-md text-sm"
-            >
-              Terms &amp; Conditions
-            </Link>
-            <button
-              onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
-              className="w-full text-left bg-gradient-to-r from-orange-500 to-orange-600 text-white block px-3 py-2 rounded-md text-base font-medium mt-4 flex items-center gap-2"
-            >
-              <Download className="w-4 h-4" />
-              Download App
-            </button>
-          </div>
-        </div>
-      )}
-    </nav>
+      <AnimatePresence>
+        {open && !legalOnly ? (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="overflow-hidden border-t border-[var(--line)] md:hidden"
+            style={{ background: 'var(--nav-bg)' }}
+          >
+            <div className="flex flex-col gap-1 px-4 py-4">
+              {LINKS.map((l) => (
+                <a
+                  key={l.href}
+                  href={l.href}
+                  className="rounded-xl px-3 py-3 text-sm font-medium text-[var(--ink)] hover:bg-[var(--bg-muted)]"
+                >
+                  {l.label}
+                </a>
+              ))}
+              <a
+                href="#play-store"
+                className="mt-2 rounded-full bg-brand px-4 py-3 text-center text-sm font-semibold text-white"
+              >
+                Get the app
+              </a>
+            </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </header>
   );
-};
-
-export default Navbar;
+}

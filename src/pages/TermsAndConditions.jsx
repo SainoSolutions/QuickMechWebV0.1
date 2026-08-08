@@ -13,7 +13,7 @@ export default function TermsAndConditions() {
       <p>
         Quick Mech provides a platform that connects customers with independent or affiliated
         vehicle service partners for doorstep car and bike maintenance and related services in
-        supported areas (currently focused on Guwahati, Assam, and expanding over time).
+        supported areas.
       </p>
 
       <h2>2. Eligibility</h2>
@@ -40,7 +40,10 @@ export default function TermsAndConditions() {
       <h2>5. Payments, cancellations, and refunds</h2>
       <ul>
         <li>Payments are processed through our payment partners. Applicable taxes may apply.</li>
-        <li>Cancellation and refund eligibility depends on booking status and our refund policy.</li>
+        <li>
+          Cancellation and refund eligibility depends on booking status and our{' '}
+          <a href="/refund-policy">Refund Policy</a>.
+        </li>
         <li>
           For refund questions, contact{' '}
           <a href="mailto:support@quickmech.in">support@quickmech.in</a>.
@@ -99,8 +102,8 @@ export default function TermsAndConditions() {
 
       <h2>13. Governing law</h2>
       <p>
-        These Terms are governed by the laws of India. Courts in Guwahati, Assam shall have
-        exclusive jurisdiction, subject to mandatory consumer protections that apply to you.
+        These Terms are governed by the laws of India, subject to mandatory consumer protections
+        that apply to you.
       </p>
 
       <h2>14. Contact</h2>
@@ -109,8 +112,6 @@ export default function TermsAndConditions() {
         <a href="mailto:support@quickmech.in">support@quickmech.in</a>
         <br />
         Phone: +91 8787451886 / +91 9774336670
-        <br />
-        Location: Guwahati, Assam, India
       </p>
     </LegalDocument>
   );

@@ -101,8 +101,6 @@ export default function PrivacyPolicy() {
         <a href="mailto:support@quickmech.in">support@quickmech.in</a>
         <br />
         Phone: +91 8787451886 / +91 9774336670
-        <br />
-        Location: Guwahati, Assam, India
       </p>
     </LegalDocument>
   );

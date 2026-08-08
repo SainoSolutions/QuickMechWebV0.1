@@ -1,44 +1,58 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { whyChooseUs } from '../utils/data';
-import * as Icons from 'lucide-react';
+import { WHY } from '../data/site';
+import { Reveal } from './motion';
 
-const WhyChooseUs = () => {
+export default function WhyChooseUs() {
   return (
-    <section id="why-us" className="py-20 bg-primary/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Why Choose Quick Mech</h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
-            Experience the difference with our premium doorstep service.
-          </p>
-        </div>
+    <section id="why" className="relative scroll-mt-24 wash-brand-mist px-4 py-20 sm:px-6 sm:py-28">
+      <div
+        className="pointer-events-none absolute left-1/2 top-0 h-px w-[min(80%,42rem)] -translate-x-1/2 bg-gradient-to-r from-transparent via-brand/35 to-transparent"
+        aria-hidden
+      />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {whyChooseUs.map((feature, index) => {
-            const Icon = Icons[feature.icon];
-            
-            return (
-              <motion.div
-                key={feature.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="glassmorphism p-8 rounded-3xl text-center group hover:bg-white/10 transition-colors"
-              >
-                <div className="w-16 h-16 mx-auto bg-secondary/20 rounded-2xl flex items-center justify-center mb-6 border border-secondary/30 group-hover:scale-110 transition-transform">
-                  <Icon className="w-8 h-8 text-secondary" />
+      <div className="relative mx-auto max-w-6xl">
+        <Reveal>
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand">Why QuickMech</p>
+          <h2 className="mt-3 max-w-3xl font-display text-3xl font-extrabold tracking-tight text-[var(--ink)] sm:text-5xl">
+            Verified mechanics. Honest quotes. Real ratings.
+          </h2>
+        </Reveal>
+
+        <div className="mt-12 grid gap-4 sm:grid-cols-2">
+          {WHY.map((item) => (
+            <Reveal key={item.title}>
+              <article className="group relative min-h-[260px] overflow-hidden rounded-[1.35rem] border border-[var(--line)] shadow-[var(--shadow)] sm:min-h-[300px]">
+                <img
+                  src={item.image}
+                  alt=""
+                  className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]"
+                  loading="lazy"
+                />
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      'linear-gradient(to top, rgba(18,10,12,0.92) 0%, rgba(18,10,12,0.55) 45%, rgba(18,10,12,0.2) 100%)',
+                  }}
+                  aria-hidden
+                />
+                <div
+                  className="absolute inset-x-0 bottom-0 h-[3px] origin-left scale-x-0 bg-brand transition duration-500 group-hover:scale-x-100"
+                  aria-hidden
+                />
+                <div className="relative flex h-full min-h-[260px] flex-col justify-end p-6 sm:min-h-[300px]">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/55">
+                    Why QuickMech
+                  </p>
+                  <h3 className="mt-2 font-display text-2xl font-bold text-white sm:text-[1.65rem]">
+                    {item.title}
+                  </h3>
+                  <p className="mt-2 max-w-md text-sm leading-relaxed text-white/75">{item.text}</p>
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed">{feature.description}</p>
-              </motion.div>
-            );
-          })}
+              </article>
+            </Reveal>
+          ))}
         </div>
       </div>
     </section>
   );
-};
-
-export default WhyChooseUs;
+}

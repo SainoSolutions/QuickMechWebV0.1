@@ -1,14 +1,15 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { send } from '@emailjs/browser';
-import { Mail, Phone, MapPin, Send, CheckCircle } from 'lucide-react';
+import { Mail, Phone, Send, CheckCircle } from 'lucide-react';
+import { BRAND } from '../data/site';
+import { Reveal } from './motion';
 
-const InquiryForm = () => {
+export default function InquiryForm() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    message: ''
+    message: '',
   });
   const [submitted, setSubmitted] = useState(false);
   const [isSending, setIsSending] = useState(false);
@@ -17,33 +18,28 @@ const InquiryForm = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    const normalizedValue = name === 'phone'
-      ? value.replace(/\D/g, '').slice(0, 10)
-      : value;
-
-    setFormData(prev => ({ ...prev, [name]: normalizedValue }));
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
-    }
+    const normalizedValue =
+      name === 'phone' ? value.replace(/\D/g, '').slice(0, 10) : value;
+    setFormData((prev) => ({ ...prev, [name]: normalizedValue }));
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
   const validateForm = () => {
-    const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = 'Name is required';
-    if (!formData.email.trim()) newErrors.email = 'Email is required';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = 'Invalid email';
-    if (!formData.phone.trim()) newErrors.phone = 'Phone is required';
-    else if (!/^[6-9]\d{9}$/.test(formData.phone.trim())) newErrors.phone = 'Enter a 10-digit mobile number starting with 6, 7, 8, or 9';
-    if (!formData.message.trim()) newErrors.message = 'Message is required';
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    const next = {};
+    if (!formData.name.trim()) next.name = 'Name is required';
+    if (!formData.email.trim()) next.email = 'Email is required';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) next.email = 'Invalid email';
+    if (!formData.phone.trim()) next.phone = 'Phone is required';
+    else if (!/^[6-9]\d{9}$/.test(formData.phone.trim()))
+      next.phone = 'Enter a 10-digit mobile number starting with 6–9';
+    if (!formData.message.trim()) next.message = 'Message is required';
+    setErrors(next);
+    return Object.keys(next).length === 0;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-
     setIsSending(true);
     setSubmitError('');
 
@@ -52,183 +48,123 @@ const InquiryForm = () => {
     const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
     if (!serviceId || !templateId || !publicKey) {
-      setSubmitError('EmailJS config is missing. Move your .env to the project root and restart the dev server.');
+      setSubmitError('Contact form is temporarily unavailable. Email us instead.');
       setIsSending(false);
       return;
     }
 
-    const templateParams = {
-      from_name: formData.name,
-      from_email: formData.email,
-      phone: formData.phone,
-      message: formData.message
-    };
-
     send(
       serviceId,
       templateId,
-      templateParams,
-      publicKey
+      {
+        from_name: formData.name,
+        from_email: formData.email,
+        phone: formData.phone,
+        message: formData.message,
+      },
+      publicKey,
     )
       .then(() => {
         setSubmitted(true);
         setFormData({ name: '', email: '', phone: '', message: '' });
-        setTimeout(() => {
-          setSubmitted(false);
-        }, 3000);
       })
-      .catch(() => {
-        setSubmitError('Unable to send your message right now. Please try again later.');
-      })
-      .finally(() => {
-        setIsSending(false);
-      });
+      .catch(() => setSubmitError('Could not send. Try again or email support.'))
+      .finally(() => setIsSending(false));
   };
 
+  const fieldClass =
+    'w-full rounded-xl border border-[var(--line)] bg-[var(--bg)] px-4 py-3 text-sm text-[var(--ink)] outline-none transition placeholder:text-[var(--mute)] focus:border-brand';
+
   return (
-    <section id="inquiry" className="py-20 bg-gradient-to-b from-darkBg to-primary/30">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Left Side - Info */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Get in Touch With Us
-            </h2>
-            <p className="text-gray-400 text-lg mb-8 leading-relaxed">
-              Have any questions about our services or want to learn more about our mobile app? We'd love to hear from you. Send us a message and our team will get back to you shortly!
-            </p>
+    <section id="contact" className="relative scroll-mt-24 wash-contact px-4 py-20 sm:px-6 sm:py-28">
+      <div className="relative mx-auto grid max-w-6xl gap-10 lg:grid-cols-2">
+        <Reveal>
+          <p className="text-xs font-bold uppercase tracking-[0.16em] text-brand">Contact</p>
+          <h2 className="mt-3 font-display text-3xl font-extrabold tracking-tight text-[var(--ink)] sm:text-4xl">
+            Talk to the garage
+          </h2>
+          <p className="mt-3 text-[var(--mute)]">
+            Questions about bookings, partnerships, or the Play Store launch — we’re here.
+          </p>
+          <ul className="mt-8 space-y-4 text-sm">
+            <li className="flex items-center gap-3 text-[var(--ink-soft)]">
+              <Mail className="h-4 w-4 text-brand" />
+              <a href={`mailto:${BRAND.supportEmail}`} className="hover:text-brand">
+                {BRAND.supportEmail}
+              </a>
+            </li>
+            <li className="flex items-center gap-3 text-[var(--ink-soft)]">
+              <Phone className="h-4 w-4 text-brand" />
+              <a href={`tel:${BRAND.supportPhone.replace(/\s/g, '')}`} className="hover:text-brand">
+                {BRAND.supportPhone}
+              </a>
+            </li>
+          </ul>
+        </Reveal>
 
-            <div className="space-y-6">
-              {[
-                { icon: Mail, label: 'Email', value: 'SUPPORT@QUICKMECH.IN', color: 'text-blue-400' },
-                { icon: Phone, label: 'Customer Help Line', value: '+91 8787451886', color: 'text-green-400' },
-                { icon: Phone, label: 'Customer Support', value: '+91 9774336670', color: 'text-green-400' },
-                { icon: MapPin, label: 'Location', value: 'Guwahati (Assam)', color: 'text-red-400' }
-              ].map((item, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, x: -30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  className="flex items-start gap-4"
+        <Reveal>
+          <div className="surface rounded-2xl p-6 shadow-[var(--shadow)] sm:p-8">
+            {submitted ? (
+              <div className="flex flex-col items-center gap-3 py-10 text-center">
+                <CheckCircle className="h-10 w-10 text-brand" />
+                <p className="font-display text-xl font-bold text-[var(--ink)]">Message sent</p>
+                <p className="text-sm text-[var(--mute)]">We’ll get back to you soon.</p>
+                <button
+                  type="button"
+                  className="mt-2 text-sm font-semibold text-brand"
+                  onClick={() => setSubmitted(false)}
                 >
-                  <div className={`p-3 rounded-lg bg-white/10 ${item.color}`}>
-                    <item.icon className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-white mb-1">{item.label}</h3>
-                    <p className="text-gray-400">{item.value}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Right Side - Form */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="glass-card rounded-3xl p-8 md:p-10"
-          >
-            {!submitted ? (
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <div>
-                  <label className="block text-sm font-semibold text-white mb-2">Full Name</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    placeholder="Your name"
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-orange-400 transition-colors"
-                  />
-                  {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name}</p>}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-white mb-2">Email Address</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    placeholder="Enter your email address"
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-orange-400 transition-colors"
-                  />
-                  {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email}</p>}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-white mb-2">Phone Number</label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    placeholder="Enter your phone number"
-                    maxLength={10}
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-orange-400 transition-colors"
-                  />
-                  {errors.phone && <p className="text-red-400 text-sm mt-1">{errors.phone}</p>}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-semibold text-white mb-2">Your Message</label>
+                  Send another
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+                {[
+                  { name: 'name', label: 'Name', type: 'text' },
+                  { name: 'email', label: 'Email', type: 'email' },
+                  { name: 'phone', label: 'Phone', type: 'tel' },
+                ].map((f) => (
+                  <label key={f.name} className="block text-sm">
+                    <span className="mb-1.5 block font-medium text-[var(--ink)]">{f.label}</span>
+                    <input
+                      name={f.name}
+                      type={f.type}
+                      value={formData[f.name]}
+                      onChange={handleInputChange}
+                      className={fieldClass}
+                    />
+                    {errors[f.name] ? (
+                      <span className="mt-1 block text-xs text-red-500">{errors[f.name]}</span>
+                    ) : null}
+                  </label>
+                ))}
+                <label className="block text-sm">
+                  <span className="mb-1.5 block font-medium text-[var(--ink)]">Message</span>
                   <textarea
                     name="message"
+                    rows={4}
                     value={formData.message}
                     onChange={handleInputChange}
-                    placeholder="Tell us how we can help..."
-                    rows="4"
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-orange-400 transition-colors resize-none"
+                    className={fieldClass}
                   />
-                  {errors.message && <p className="text-red-400 text-sm mt-1">{errors.message}</p>}
-                </div>
-
-                {submitError && <p className="text-red-400 text-sm mb-2">{submitError}</p>}
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
+                  {errors.message ? (
+                    <span className="mt-1 block text-xs text-red-500">{errors.message}</span>
+                  ) : null}
+                </label>
+                {submitError ? <p className="text-sm text-red-500">{submitError}</p> : null}
+                <button
                   type="submit"
                   disabled={isSending}
-                  className="w-full px-6 py-3 rounded-lg font-semibold text-white bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 transition-all shadow-lg shadow-orange-500/30 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand px-5 py-3 text-sm font-bold text-white transition hover:bg-brand-deep disabled:opacity-70"
                 >
-                  <Send className="w-4 h-4" />
-                  {isSending ? 'Sending...' : 'Send Inquiry'}
-                </motion.button>
+                  <Send className="h-4 w-4" />
+                  {isSending ? 'Sending…' : 'Send message'}
+                </button>
               </form>
-            ) : (
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                className="flex flex-col items-center justify-center h-full py-8"
-              >
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 0.6 }}
-                  className="mb-4"
-                >
-                  <CheckCircle className="w-16 h-16 text-green-400" />
-                </motion.div>
-                <h3 className="text-2xl font-bold text-white mb-2">Thank You!</h3>
-                <p className="text-gray-400 text-center">
-                  We've received your inquiry. Our team will get back to you within 24 hours.
-                </p>
-              </motion.div>
             )}
-          </motion.div>
-        </div>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
-};
-
-export default InquiryForm;
+}

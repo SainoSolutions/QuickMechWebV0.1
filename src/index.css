@@ -1,50 +1,118 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #0F172A;
-  --color-secondary: #F97316;
-  --color-darkBg: #0B1120;
-  --color-cardBg: rgba(15, 23, 42, 0.6);
-  --font-sans: 'Inter', sans-serif;
+  --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
 
-  --background-image-hoora-blue: linear-gradient(135deg, rgba(59,130,246,0.9), rgba(30,58,138,0.9));
-  --background-image-hoora-purple: linear-gradient(135deg, rgba(168,85,247,0.9), rgba(88,28,135,0.9));
-  --background-image-hoora-green: linear-gradient(135deg, rgba(34,197,94,0.9), rgba(20,83,45,0.9));
-  --background-image-hoora-pink: linear-gradient(135deg, rgba(236,72,153,0.9), rgba(131,24,67,0.9));
-  --background-image-hoora-orange: linear-gradient(135deg, rgba(249,115,22,0.9), rgba(124,45,18,0.9));
-  --background-image-hoora-red: linear-gradient(135deg, rgba(239,68,68,0.9), rgba(127,29,29,0.9));
-  --background-image-hoora-teal: linear-gradient(135deg, rgba(20,184,166,0.9), rgba(19,78,74,0.9));
-  --background-image-hoora-indigo: linear-gradient(135deg, rgba(99,102,241,0.9), rgba(49,46,129,0.9));
+  --color-brand: #b33a47;
+  --color-brand-deep: #822733;
+  --color-brand-darker: #48151d;
+  --color-brand-soft: #fce4e8;
+  --color-brand-mist: #fff2f4;
+}
+
+:root {
+  color-scheme: light;
+  --bg: #f1efe9;
+  --bg-elevated: #faf8f4;
+  --bg-muted: #e6e2d8;
+  --ink: #1a1214;
+  --ink-soft: #3f3437;
+  --mute: #6b5f63;
+  --line: rgba(26, 18, 20, 0.1);
+  --hero-wash: linear-gradient(145deg, #b33a47 0%, #992f3c 38%, #5c1d28 100%);
+  --shadow: 0 24px 60px -28px rgba(72, 21, 29, 0.4);
+  --nav-bg: rgba(250, 248, 244, 0.78);
+  --mesh-1: rgba(179, 58, 71, 0.28);
+  --mesh-2: rgba(130, 39, 51, 0.18);
+  --mesh-3: rgba(255, 180, 120, 0.12);
+  --scroll-track: #e6e2d8;
+  --scroll-thumb: #b33a47;
+  --scroll-thumb-hover: #822733;
+}
+
+html.dark {
+  color-scheme: dark;
+  --bg: #0c0a0b;
+  --bg-elevated: #161113;
+  --bg-muted: #22191c;
+  --ink: #f7f0f1;
+  --ink-soft: #d9cacd;
+  --mute: #a39498;
+  --line: rgba(247, 240, 241, 0.1);
+  --hero-wash: linear-gradient(145deg, #6f2430 0%, #48151d 50%, #14090c 100%);
+  --shadow: 0 28px 70px -24px rgba(0, 0, 0, 0.75);
+  --nav-bg: rgba(12, 10, 11, 0.8);
+  --mesh-1: rgba(179, 58, 71, 0.35);
+  --mesh-2: rgba(255, 120, 140, 0.08);
+  --mesh-3: rgba(90, 40, 50, 0.4);
+  --scroll-track: #22191c;
+  --scroll-thumb: #b33a47;
+  --scroll-thumb-hover: #dd6d81;
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    background-color: var(--color-darkBg);
-    color: #e2e8f0;
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
   }
+
+  ::selection {
+    background: color-mix(in srgb, var(--color-brand) 40%, transparent);
+    color: var(--ink);
+  }
 }
 
-@utility glassmorphism {
-  background-color: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+/* Brand scrollbar — unlayered so it wins over Tailwind base.
+   Tip: on macOS set System Settings → Appearance → Show scroll bars → Always */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scroll-thumb) var(--scroll-track);
 }
 
-@utility glass-card {
-  background-color: rgba(15, 23, 42, 0.4);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+html::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
 }
 
-@utility text-gradient {
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-image: linear-gradient(to right, #fb923c, #ea580c);
+html::-webkit-scrollbar-track {
+  background: var(--scroll-track);
+}
+
+html::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #b33a47, #822733);
+  border-radius: 999px;
+  border: 3px solid var(--scroll-track);
+  min-height: 48px;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: #992f3c;
+}
+
+html.dark::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #b33a47, #dd6d81);
+}
+
+html.dark::-webkit-scrollbar-thumb:hover {
+  background: #dd6d81;
+}
+
+@utility font-display {
+  font-family: var(--font-display);
+}
+
+@utility surface {
+  background: var(--bg-elevated);
+  border: 1px solid var(--line);
 }
 
 @utility hide-scrollbar {
@@ -53,4 +121,110 @@
   }
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* Film grain — free SVG noise data URI */
+@utility grain {
+  position: relative;
+  isolation: isolate;
+  &::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    opacity: 0.055;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  html.dark &::after {
+    opacity: 0.08;
+  }
+}
+
+@utility blueprint-grid {
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+@keyframes mesh-drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(4%, -3%) scale(1.05);
+  }
+  66% {
+    transform: translate(-3%, 4%) scale(0.96);
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@utility animate-mesh {
+  animation: mesh-drift 18s ease-in-out infinite;
+}
+
+@utility animate-marquee {
+  animation: marquee 36s linear infinite;
+}
+
+/* Soft section washes — continuous scroll instead of hard bands */
+@utility wash-elevated {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    var(--bg-elevated) 14%,
+    var(--bg-elevated) 86%,
+    transparent 100%
+  );
+}
+
+@utility wash-brand-mist {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    color-mix(in srgb, var(--color-brand-mist) 70%, var(--bg)) 22%,
+    color-mix(in srgb, var(--color-brand-soft) 35%, var(--bg)) 55%,
+    transparent 100%
+  );
+}
+
+html.dark .wash-brand-mist {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    color-mix(in srgb, var(--color-brand-darker) 55%, var(--bg)) 25%,
+    color-mix(in srgb, var(--color-brand-deep) 28%, var(--bg)) 55%,
+    transparent 100%
+  );
+}
+
+@utility wash-contact {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    var(--bg-elevated) 18%,
+    var(--bg-elevated) 100%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

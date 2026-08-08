@@ -33,7 +33,7 @@ const ComingSoon = () => {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="mb-10 max-w-2xl text-lg leading-8 text-slate-200 sm:text-xl"
           >
-            We are preparing a smoother doorstep car and bike service experience for Guwahati.
+            We are preparing a smoother doorstep car and bike service experience.
             The app is getting its final polish, and bookings will open soon.
           </motion.p>
 
