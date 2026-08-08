@@ -15,6 +15,7 @@ import SiteLoader from './components/SiteLoader';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsAndConditions from './pages/TermsAndConditions';
 import RefundPolicy from './pages/RefundPolicy';
+import DeleteAccount from './pages/DeleteAccount';
 
 function HomePage() {
   return (
@@ -53,6 +54,7 @@ function App() {
           <Routes>
             <Route path="/docs/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/docs/terms-and-conditions" element={<TermsAndConditions />} />
+            <Route path="/docs/delete-account" element={<DeleteAccount />} />
             <Route path="/refund-policy" element={<RefundPolicy />} />
             <Route path="/docs/refund-policy" element={<RefundPolicy />} />
             <Route element={<MarketingLayout />}>

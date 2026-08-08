@@ -69,6 +69,14 @@ export default function Footer() {
                   Refund Policy
                 </Link>
               </li>
+              <li>
+                <Link
+                  to={BRAND.legal.deleteAccount}
+                  className="text-[var(--ink-soft)] hover:text-brand"
+                >
+                  Delete account
+                </Link>
+              </li>
             </ul>
           </div>
           <div>

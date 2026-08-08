@@ -10,6 +10,8 @@ export const BRAND = {
     terms: '/docs/terms-and-conditions',
     /** Same path apps expect on quickmech.in — served by this site, not an external hop. */
     refund: '/refund-policy',
+    /** Google Play / App Store account-deletion resource URL. */
+    deleteAccount: '/docs/delete-account',
   },
 };
 
