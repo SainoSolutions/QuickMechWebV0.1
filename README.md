@@ -1,22 +1,31 @@
 # QuickMech Web
 
-Marketing / features site for QuickMech (React + Vite).
+Marketing site for QuickMech (React + Vite + Tailwind).
 
----
+## Branch
 
-# React + Vite
+`revamp/marketing-site-v2` — full visual/content revamp aligned with the customer & partner apps.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Features
 
-Currently, two official plugins are available:
+- Crimson brand palette (`#B33A47`)
+- Light / dark mode (persisted)
+- Motion (Framer Motion) — scroll reveals & micro-interactions
+- Services, how-it-works, partner CTA, FAQ, contact
+- **Coming soon on Play Store** section
+- Legal routes unchanged:
+  - `/docs/privacy-policy`
+  - `/docs/terms-and-conditions`
+  - Refund: `https://quickmech.in/refund-policy`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Scripts
 
-## React Compiler
+```bash
+npm install
+npm run dev
+npm run build
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Deploy
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Vercel SPA rewrite in `vercel.json`. Live: [quick-mech-web-v0-1.vercel.app](https://quick-mech-web-v0-1.vercel.app)

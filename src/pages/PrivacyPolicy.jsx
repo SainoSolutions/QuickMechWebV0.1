@@ -78,6 +78,11 @@ export default function PrivacyPolicy() {
           <a href="mailto:support@quickmech.in">support@quickmech.in</a> to request access,
           correction, or deletion where applicable
         </li>
+        <li>
+          Or use our dedicated{' '}
+          <a href="/docs/delete-account">account deletion page</a> (also available from Profile
+          → Delete account in the app)
+        </li>
       </ul>
 
       <h2>7. Children</h2>
@@ -101,8 +106,6 @@ export default function PrivacyPolicy() {
         <a href="mailto:support@quickmech.in">support@quickmech.in</a>
         <br />
         Phone: +91 8787451886 / +91 9774336670
-        <br />
-        Location: Guwahati, Assam, India
       </p>
     </LegalDocument>
   );
